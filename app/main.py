@@ -7,9 +7,10 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from configparser import ConfigParser
 from pydantic import BaseModel
 from cloud_utility import download_from_gcs
+import os
 
 config = ConfigParser()
-config.read("config.ini")
+config.read(os.environ["config_path"])
 
 ml_models = dict()
 

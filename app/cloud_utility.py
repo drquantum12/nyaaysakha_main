@@ -4,12 +4,12 @@ import os
 from pathlib import Path
 
 config = ConfigParser()
-config.read("config.ini")
+config.read(os.environ["config_path"])
 
 storage_client = storage.Client.from_service_account_json(config.get("settings","credential_json_path"))
 
 def download_from_gcs(bucket_name):
-    if not os.path.exists("./models"):
+    if not os.path.exists(config.get("cloud_params","model_path")):
         bucket = storage_client.bucket(bucket_name)
         blobs = bucket.list_blobs()
         for blob in blobs:
@@ -17,8 +17,8 @@ def download_from_gcs(bucket_name):
                 continue
             file_split = blob.name.split("/")
             directory = "/".join(file_split[0:-1])
-            Path(f"models/{directory}").mkdir(parents=True, exist_ok=True)
-            blob.download_to_filename(f"models/{blob.name}")
+            Path(f'{config.get("cloud_params","model_path")}{directory}').mkdir(parents=True, exist_ok=True)
+            blob.download_to_filename(f'{config.get("cloud_params","model_path")}{blob.name}')
 
 def get_blob_list(bucket_name):
     bucket = storage_client.bucket(bucket_name)
