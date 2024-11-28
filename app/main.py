@@ -6,6 +6,7 @@ from langchain_community.vectorstores import FAISS
 from langchain.embeddings import HuggingFaceEmbeddings
 from configparser import ConfigParser
 from pydantic import BaseModel
+from cloud_utility import download_from_gcs
 
 config = ConfigParser()
 config.read("config.ini")
@@ -15,6 +16,10 @@ ml_models = dict()
 @asynccontextmanager
 async def lifespan(app:FastAPI):
     print("Start of lifespan")
+    
+    # download model weights if absent
+    download_from_gcs(config.get("cloud_params", "bucket_name"))
+
     vector_store_path = config.get("data", "vector_store_path")
     ml_models["embed_model"] = HuggingFaceEmbeddings(model_name="sentence-transformers/paraphrase-mpnet-base-v2")
     ml_models["docstore"] = InMemoryDocstore()
