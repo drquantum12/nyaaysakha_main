@@ -4,3 +4,4 @@ data/
 env/
 models/
 **.DS_Store
+**/credential-storage-user.json
