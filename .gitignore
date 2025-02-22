@@ -3,5 +3,7 @@ __pycache__/
 data/
 env/
 models/
+creds/
 **.DS_Store
 **/credential-storage-user.json
+**/firestore-admin-credential.json
